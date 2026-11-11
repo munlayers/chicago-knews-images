@@ -88,7 +88,23 @@ def publish(post):
     return media_id, ig("GET", media_id, {"fields": "permalink"}).get("permalink", "")
 
 
+def connection_check():
+    """queue/_check.json 이 있으면 Secrets로 인스타·텔레그램 연결만 시험 (게시는 안 함)"""
+    flag = QUEUE / "_check.json"
+    if not flag.exists():
+        return
+    try:
+        me = ig("GET", os.environ["INSTAGRAM_USER_ID"], {"fields": "username"})
+        notify(f"✅ GitHub 연결 확인! @{me.get('username')} 계정으로 예약 게시할 준비가 됐어요. (실제 게시는 안 했어요)")
+        print("연결 확인 성공")
+    except Exception as e:
+        notify(f"⚠️ GitHub 연결 확인 실패: {e}\nSecrets 값을 다시 확인해 주세요.")
+        print(f"연결 확인 실패: {e}")
+    flag.unlink()
+
+
 def main():
+    connection_check()
     now = datetime.now(timezone.utc)
     for pj in sorted(QUEUE.glob("*/post.json")):
         post = json.loads(pj.read_text(encoding="utf-8"))
