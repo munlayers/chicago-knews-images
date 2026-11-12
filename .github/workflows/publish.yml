@@ -32,6 +32,8 @@ jobs:
     timeout-minutes: 60         # 게시 시각까지 기다리는 시간 포함
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: main             # 예약 시점의 옛 기록이 아니라 '지금' 최신 기록으로 확인 (중복 게시 방지)
       - name: 게시할 시간이 된 게시물 올리기
         run: python3 publisher/publish_queue.py
         env:
