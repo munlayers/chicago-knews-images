@@ -1,9 +1,13 @@
-"""GitHub 서버에서 15분마다 실행돼요. (사용자 컴퓨터가 꺼져 있어도 동작)
+"""GitHub 서버에서 실행돼요. (사용자 컴퓨터가 꺼져 있어도 동작)
+
+GitHub 예약 실행은 몇십 분씩 늦을 때가 많아요. 그래서 게시 시각 30~40분 전에 미리 깨어나
+게시 시각까지 기다렸다가 정확히 올려요.
 
 queue/<날짜>-<morning|noon>/post.json 중
   - status가 "scheduled" 이고
-  - publish_at(게시 시각)이 지났으면
-인스타그램에 캐러셀로 게시하고, 결과를 post.json에 기록한 뒤 텔레그램으로 알려요.
+  - publish_at(게시 시각)이 지났거나 EARLY_MIN분 안으로 다가왔으면
+(다가온 경우엔 그 시각까지 기다렸다가) 인스타그램에 캐러셀로 게시하고,
+결과를 post.json에 기록한 뒤 텔레그램으로 알려요.
 
 비밀 값(토큰)은 GitHub 저장소의 Secrets에서만 읽어요. 파일에는 저장하지 않아요.
 """
@@ -19,6 +23,7 @@ from pathlib import Path
 QUEUE = Path("queue")
 GRAPH = f"https://graph.facebook.com/{os.environ.get('GRAPH_VERSION', 'v27.0')}"
 MAX_TRIES = 3
+EARLY_MIN = 45  # 게시 시각 몇 분 전부터 미리 깨어나 기다릴지
 
 
 def http(method, url, params=None):
@@ -105,14 +110,20 @@ def connection_check():
 
 def main():
     connection_check()
-    now = datetime.now(timezone.utc)
-    for pj in sorted(QUEUE.glob("*/post.json")):
+    due = []
+    for pj in QUEUE.glob("*/post.json"):
         post = json.loads(pj.read_text(encoding="utf-8"))
         if post.get("status") != "scheduled":
             continue
         when = datetime.fromisoformat(post["publish_at"])
-        if when > now:
-            continue
+        if (when - datetime.now(timezone.utc)).total_seconds() <= EARLY_MIN * 60:
+            due.append((when, pj, post))
+    for when, pj, post in sorted(due, key=lambda x: x[0]):
+        wait = (when - datetime.now(timezone.utc)).total_seconds()
+        if wait > 0:
+            print(f"{pj.parent.name}: 게시 시각까지 {wait / 60:.1f}분 기다려요")
+            time.sleep(wait)
+        now = datetime.now(timezone.utc)
         label = post.get("label", pj.parent.name)
         try:
             media_id, link = publish(post)
