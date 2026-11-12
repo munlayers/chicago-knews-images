@@ -13,6 +13,7 @@ queue/<날짜>-<morning|noon>/post.json 중
 """
 import json
 import os
+import subprocess
 import time
 import urllib.error
 import urllib.parse
@@ -108,6 +109,17 @@ def connection_check():
     flag.unlink()
 
 
+def still_scheduled(pj):
+    """기다리는 사이 다른 실행이 먼저 올렸을 수 있어서, 올리기 직전에 최신 기록을 다시 확인해요"""
+    try:
+        subprocess.run(["git", "pull", "--ff-only", "-q"], check=True, timeout=60)
+    except Exception as e:  # noqa: BLE001
+        print(f"최신 기록 확인 실패 ({e}), 안전하게 이번엔 건너뛰어요")
+        return None
+    post = json.loads(pj.read_text(encoding="utf-8"))
+    return post if post.get("status") == "scheduled" else None
+
+
 def main():
     connection_check()
     due = []
@@ -123,6 +135,10 @@ def main():
         if wait > 0:
             print(f"{pj.parent.name}: 게시 시각까지 {wait / 60:.1f}분 기다려요")
             time.sleep(wait)
+        post = still_scheduled(pj)
+        if post is None:
+            print(f"{pj.parent.name}: 이미 올라갔거나 확인이 안 돼서 건너뛰어요 (중복 방지)")
+            continue
         now = datetime.now(timezone.utc)
         label = post.get("label", pj.parent.name)
         try:
