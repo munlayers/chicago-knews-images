@@ -2,7 +2,19 @@ name: 인스타 예약 게시
 
 on:
   schedule:
-    - cron: "*/15 * * * *"   # 15분마다 게시할 시간이 된 게시물이 있는지 확인
+    # GitHub 예약은 자주 늦어서, 게시 시각 약 35분·20분 전에 두 번 미리 깨워요 (UTC 기준)
+    # 아침 7:00 시카고 = 겨울 13:00 UTC / 여름 12:00 UTC
+    - cron: "23 12 * * *"
+    - cron: "38 12 * * *"
+    - cron: "23 11 * * *"
+    - cron: "38 11 * * *"
+    # 점심 12:00 시카고 = 겨울 18:00 UTC / 여름 17:00 UTC
+    - cron: "23 17 * * *"
+    - cron: "38 17 * * *"
+    - cron: "23 16 * * *"
+    - cron: "38 16 * * *"
+    # 혹시 놓쳤을 때를 위한 1시간마다 확인
+    - cron: "7 * * * *"
   workflow_dispatch:          # 수동 실행 버튼
   push:
     paths: ["queue/**"]       # 저녁에 새 게시물이 올라오면 바로 한 번 확인
@@ -17,7 +29,7 @@ concurrency:
 jobs:
   publish:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 60         # 게시 시각까지 기다리는 시간 포함
     steps:
       - uses: actions/checkout@v4
       - name: 게시할 시간이 된 게시물 올리기
