@@ -1,0 +1,26 @@
+{
+  "label": "🌅 아침 브리핑",
+  "publish_at": "2026-11-13T07:00:00-06:00",
+  "status": "scheduled",
+  "caption": "시카고 뉴스 (11/13 금) · 상가 16곳, 30분 만에 털렸다\n\n🚨 윌메트 상가 최소 16곳 새벽 연쇄 절도, 에반스턴도 조사\n🏚 브루클린 3층 건물 붕괴, 8명 사망\n💻 엔비디아 젠슨 황 CEO 즉시 사임\n❄️ 금요일 아침 첫눈 가능, 시내는 쌓이지 않을 전망\n🚇 블루라인 주말 셔틀버스 · 추수감사절 퍼레이드 7:45 시작\n\n저장해 두세요.\n기사·사진 출처는 마지막 장에 표기했습니다.\n매일 시카고 소식을 한국어로 전합니다 👉 @chicago_knews\n\n#시카고뉴스 #시카고생활 #시카고한인 #시카고날씨 #시카고첫눈",
+  "alt_texts": [
+    "윌메트 상가 연쇄 절도를 표현한 일러스트와 제목",
+    "브루클린 건물 붕괴 소식 카드",
+    "윌메트 상가 줄지어 깨진 유리창 일러스트",
+    "엔비디아 CEO 사임 소식 카드",
+    "추수감사절 퍼레이드 시간 변경 카드",
+    "블루라인 주말 셔틀버스 안내 카드",
+    "금요일부터 일요일까지 날씨 예보",
+    "마무리 카드"
+  ],
+  "images": [
+    "https://raw.githubusercontent.com/munlayers/chicago-knews-images/main/queue/2026-11-13-morning/01.jpg",
+    "https://raw.githubusercontent.com/munlayers/chicago-knews-images/main/queue/2026-11-13-morning/02.jpg",
+    "https://raw.githubusercontent.com/munlayers/chicago-knews-images/main/queue/2026-11-13-morning/03.jpg",
+    "https://raw.githubusercontent.com/munlayers/chicago-knews-images/main/queue/2026-11-13-morning/04.jpg",
+    "https://raw.githubusercontent.com/munlayers/chicago-knews-images/main/queue/2026-11-13-morning/05.jpg",
+    "https://raw.githubusercontent.com/munlayers/chicago-knews-images/main/queue/2026-11-13-morning/06.jpg",
+    "https://raw.githubusercontent.com/munlayers/chicago-knews-images/main/queue/2026-11-13-morning/07.jpg",
+    "https://raw.githubusercontent.com/munlayers/chicago-knews-images/main/queue/2026-11-13-morning/08.jpg"
+  ]
+}
